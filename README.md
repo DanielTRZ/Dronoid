@@ -1,1 +1,1 @@
-# Dronoid
+# Dronoid - Dronoid browser game
