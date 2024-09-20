@@ -1,0 +1,110 @@
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.game-area {
+    position: relative;
+    width: 400px;
+    height: 600px;
+    border: 2px solid #333;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.paddle {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    width: 80px;
+    height: 10px;
+    background-color: #333;
+    transform: translateX(-50%);
+}
+
+.ball {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: #f00;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#score {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 20px;
+    font-family: Arial, sans-serif;
+}
+
+#gameOver {
+    text-align: center;
+    margin-top: 20px;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#dronoidTitle {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 48px;
+    color: #007bff;
+    text-align: center;
+    animation: fadeIn 2s ease-in-out forwards;
+    margin-bottom: 20px;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+#gameOver h2 {
+    font-family: 'Bungee', cursive;
+    color: red;
+    font-size: 48px;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+body, button, #score, #startButton, #restartButton {
+    font-family: 'Press Start 2P', cursive;
+}
+
+
+
+body {
+    background-image: url('dronoid.webp');
+    background-size: cover; /* Dopasowuje obraz do rozmiaru ekranu */
+    background-position: center; /* Ustawia obraz na środku */
+    background-repeat: no-repeat; /* Zapobiega powtarzaniu obrazu */
+    z-index: -5; /* Ustawia element za innymi, ale nie działa na body */
+}
