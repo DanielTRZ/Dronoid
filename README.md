@@ -1,1 +1,1 @@
-# Dronoid - Dronoid browser game
+# Dronoid - Dronoid chrome web browser tested 
