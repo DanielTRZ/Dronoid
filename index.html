@@ -9,17 +9,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Bungee&display=swap" rel="stylesheet">
 </head>
 <body> 
-    <h1 id="dronoidTitle" style="display: none;">Dronoid</h1>
+   
     <div class="game-area">
+        <h1 id="dronoidTitle" style="display: none;">Dronoid</h1>
         <div class="paddle" id="paddle"></div>
         <div class="ball" id="ball"></div>
         <div id="score">Licznik odbić: 0</div>
+        
+        <div id="pointsMessage" class="points-message" style="display: none;"></div>
+        <div id="finalScore" class="final-score" style="display: none;">Gościu, obiłeś piłkę: <span id="scoreCount">0</span> razy</div>
+        <div id="explosion" class="explosion">BUM</div> <!-- Nowy element dla wybuchu -->
+       
+
+      
+
+        
+      
+
        
     </div>
-    <button id="startButton">Start</button>
+    <button id="startButton">Zacznij odbijać</button>
     <div id="gameOver" style="display: none;">
         <h2>Game Over</h2>
-        <button id="restartButton">Zacznij od nowa</button>
+        <button id="restartButton">Odbijaj od nowa </button>
     </div>
     <script src="script.js"></script>
    

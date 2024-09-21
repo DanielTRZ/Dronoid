@@ -1,3 +1,4 @@
+
 body {
     margin: 0;
     display: flex;
@@ -12,26 +13,30 @@ body {
     position: relative;
     width: 400px;
     height: 600px;
-    border: 2px solid #333;
+    border: 10px solid #333;
     overflow: hidden;
-    background-color: #fff;
+    background-color: red;
+   
+   
 }
 
 .paddle {
     position: absolute;
     bottom: 10px;
     left: 50%;
-    width: 80px;
-    height: 10px;
+    width: 100px;
+    height: 20px;
     background-color: #333;
     transform: translateX(-50%);
+    margin-left: 50px;
+   
 }
 
 .ball {
     position: absolute;
     width: 15px;
     height: 15px;
-    background-color: #f00;
+    background-color: whitesmoke;
     border-radius: 50%;
     top: 50%;
     left: 50%;
@@ -40,15 +45,16 @@ body {
 
 #score {
     position: absolute;
-    top: 10px;
-    left: 10px;
+    top: 30px;
+    left: 40px;
     font-size: 20px;
     font-family: Arial, sans-serif;
+    color:yellow;
 }
 
 #gameOver {
     text-align: center;
-    margin-top: 20px;
+    margin-top: -40px;
 }
 
 button {
@@ -56,6 +62,8 @@ button {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
+    background-color: yellow;
+    margin-top: 20px;
 }
 
 #dronoidTitle {
@@ -65,6 +73,7 @@ button {
     text-align: center;
     animation: fadeIn 2s ease-in-out forwards;
     margin-bottom: 20px;
+    margin-top: 100px;
 }
 
 @keyframes fadeIn {
@@ -77,6 +86,7 @@ button {
         transform: scale(1);
     }
 }
+
 #gameOver h2 {
     font-family: 'Bungee', cursive;
     color: red;
@@ -95,16 +105,66 @@ button {
         transform: scale(1);
     }
 }
+
 body, button, #score, #startButton, #restartButton {
     font-family: 'Press Start 2P', cursive;
+    
 }
-
-
-
 body {
     background-image: url('dronoid.webp');
     background-size: cover; /* Dopasowuje obraz do rozmiaru ekranu */
     background-position: center; /* Ustawia obraz na środku */
     background-repeat: no-repeat; /* Zapobiega powtarzaniu obrazu */
     z-index: -5; /* Ustawia element za innymi, ale nie działa na body */
+} 
+/*wybuch*/
+.explosion {
+    position: fixed;
+    width: 1px;
+    height: 1px;
+    background-color: white;
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0);
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    margin-left: 20px;
+}
+
+.explosion.active {
+    opacity: 1;
+    transform: scale(1.5);
+}
+
+.explosion.fade-out {
+    opacity: 0;
+    transform: scale(0);
+}
+
+
+.final-score {
+    position: absolute;
+    top: 50%; /* Ustawienie na środku */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: yellow;
+    font-size: 24px;
+    font-family: 'Press Start 2P', cursive;
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+
+.points-message {
+    position: absolute;
+    top: 57px; /* Ustal miejsce, gdzie chcesz wyświetlić komunikat */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7); /* Przezroczyste tło */
+    color: white; /* Kolor tekstu */
+    padding: 10px 20px; /* Padding wewnętrzny */
+    border-radius: 5px; /* Zaokrąglone rogi */
+    font-size: 20px; /* Rozmiar czcionki */
+    text-align: center; /* Wyśrodkowanie tekstu */
+    z-index: 1000; /* Zwiększa z-index, aby komunikat był na wierzchu */
+    display: none; /* Początkowo ukryty */
 }
