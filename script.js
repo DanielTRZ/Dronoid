@@ -1,5 +1,3 @@
-
-
 document.addEventListener('DOMContentLoaded', () => {
     const paddle = document.getElementById('paddle');
     const ball = document.getElementById('ball');
@@ -19,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let score = 0;
     let gameActive = false;
 
-    const colors = ['#FF5733', '#33FF57', '#3357FF', '#F0FF33', '#FF33A8']; // Dodaj kolory, które chcesz użyć
+    const colors = ['#FF5733', '#33FF57', '#3357FF', '#F0FF33', '#FF33A8'];
     let currentColorIndex = 0;
 
     function showDronoidTitle() {
@@ -67,10 +65,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2000);
     }
 
-    // Funkcja do zmiany koloru tła
     function changeBackgroundColor() {
-        currentColorIndex = (currentColorIndex + 1) % colors.length; // Zmiana koloru
-        gameArea.style.transition = 'background-color 1s'; // Płynne przejście
+        currentColorIndex = (currentColorIndex + 1) % colors.length;
+        gameArea.style.transition = 'background-color 1s';
         gameArea.style.backgroundColor = colors[currentColorIndex];
     }
 
@@ -124,10 +121,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             triggerExplosion(ballRect.left + ballRect.width / 2, ballRect.top + ballRect.height / 2);
 
-            // Wyświetl komunikat i zmień kolor co 10 punktów
             if (score % 10 === 0 && score > 0) {
                 showPointsMessage(score);
-                changeBackgroundColor(); // Zmiana koloru tła
+                changeBackgroundColor();
             }
         }
 
@@ -148,5 +144,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Obsługa panelu dotykowego
+    function handleTouchMove(event) {
+        if (gameActive) {
+            const gameAreaRect = gameArea.getBoundingClientRect();
+            const touch = event.touches[0];
+            paddlePosition = touch.clientX - gameAreaRect.left - paddle.clientWidth / 2;
+            paddlePosition = Math.max(0, Math.min(gameArea.clientWidth - paddle.clientWidth, paddlePosition));
+            paddle.style.left = paddlePosition + 'px';
+            paddle.style.top = gameArea.clientHeight - 60 + 'px';
+        }
+    }
+
+    document.addEventListener('touchmove', handleTouchMove);
+
+    document.addEventListener('touchstart', (event) => {
+        if (!gameActive) {
+            showDronoidTitle();
+        }
+    });
+
     paddle.style.top = gameArea.clientHeight - 60 + 'px';
 });
+
+
