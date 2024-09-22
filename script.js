@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ballSpeed.y > 0
         ) {
             ballSpeed.y = -Math.abs(ballSpeed.y);
-            ballPosition.y = paddleRect.top - 150;
+            ballPosition.y = paddleRect.top - 200;
             score++;
             scoreDisplay.textContent = "Licznik odbić: " + score;
 
