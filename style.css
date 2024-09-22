@@ -16,6 +16,7 @@ body {
     border: 10px solid #333;
     overflow: hidden;
     background-color: red;
+    margin-top: 50px;
    
    
 }
@@ -115,7 +116,7 @@ body {
     background-size: cover; /* Dopasowuje obraz do rozmiaru ekranu */
     background-position: center; /* Ustawia obraz na środku */
     background-repeat: no-repeat; /* Zapobiega powtarzaniu obrazu */
-    z-index: -5; /* Ustawia element za innymi, ale nie działa na body */
+    z-index: -2; /* Ustawia element za innymi, ale nie działa na body */
 } 
 /*wybuch*/
 .explosion {
@@ -167,4 +168,16 @@ body {
     text-align: center; /* Wyśrodkowanie tekstu */
     z-index: 1000; /* Zwiększa z-index, aby komunikat był na wierzchu */
     display: none; /* Początkowo ukryty */
+}
+footer {
+    position: relative;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    font-size: 20px;
+    color: #fff;
+    margin-top:50px; 
+    padding: 10px;
+    border-radius: 5px;
+    font-family: 'Montserrat', cursive; /* Dodaj tę linię */
 }
