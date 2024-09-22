@@ -158,13 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('touchmove', handleTouchMove);
 
-    document.addEventListener('touchstart', (event) => {
-        if (!gameActive) {
-            showDronoidTitle();
-        }
-    });
-
+    // Gra startuje tylko po wciśnięciu przycisku start
     paddle.style.top = gameArea.clientHeight - 60 + 'px';
 });
-
-
