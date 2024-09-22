@@ -168,8 +168,3 @@ body {
     z-index: 1000; /* Zwiększa z-index, aby komunikat był na wierzchu */
     display: none; /* Początkowo ukryty */
 }
-p{ 
-    color: white;
-    font-size: small;
-   
-}
