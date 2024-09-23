@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', () => {
     const paddle = document.getElementById('paddle');
     const ball = document.getElementById('ball');
@@ -9,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const restartButton = document.getElementById('restartButton');
     const dronoidTitle = document.getElementById('dronoidTitle');
     const pointsMessage = document.getElementById('pointsMessage');
+    const finalScoreDisplay = document.getElementById('finalScore');
+    const scoreCount = document.getElementById('scoreCount');
 
     let paddlePosition = (gameArea.clientWidth / 2) - (paddle.clientWidth / 2);
     let ballPosition = { x: gameArea.clientWidth / 2 - 7.5, y: gameArea.clientHeight - 50 };
@@ -16,8 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let gameInterval;
     let score = 0;
     let gameActive = false;
+    let originalPaddleWidth = paddle.clientWidth;
+    let powerUpActive = false;
+    let powerUpTimeout;
+    let lastPowerUpTime = 0; // Zmienna do przechowywania ostatniego czasu aktywacji power-upu
 
-    const colors = ['#FF5733', '#33FF57', '#3357FF', '#F0FF33', '#FF33A8'];
+    const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF0000', '#FF33A8','#7FFFD4','#556B2F','#708090'];
     let currentColorIndex = 0;
 
     function showDronoidTitle() {
@@ -38,6 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ballSpeed = { x: 2, y: -4 };
         gameOverDisplay.style.display = 'none';
         gameActive = true;
+        paddle.style.width = originalPaddleWidth + 'px';
+        clearTimeout(powerUpTimeout); // Resetuje ewentualny poprzedni power-up
         gameInterval = setInterval(updateGame, 10);
     }
 
@@ -57,12 +66,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showPointsMessage(score) {
-        pointsMessage.textContent = `Pierwsza liczba punktów: ${score}`;
+        pointsMessage.textContent = `Gościu zbobyłeś: ${score} odbić`;
         pointsMessage.style.display = 'block';
 
         setTimeout(() => {
             pointsMessage.style.display = 'none';
         }, 2000);
+    }
+
+    function showPowerUpMessage() {
+        pointsMessage.textContent = 'Gościu powiększenie!';
+        pointsMessage.style.display = 'block';
+
+        setTimeout(() => {
+            pointsMessage.style.display = 'none';
+        }, 2000);
+    }
+
+    function activatePaddlePowerUp() {
+        // Zwiększa szerokość paletki
+        const newPaddleWidth = originalPaddleWidth * 7.5;
+        paddle.style.width = newPaddleWidth + 'px'; 
+
+        // Oblicz nową pozycję
+        const gameAreaWidth = gameArea.clientWidth;
+        let newRightPosition = (gameAreaWidth / 2) - (newPaddleWidth / 2);
+        const maxRightPosition = gameAreaWidth - newPaddleWidth;
+        newRightPosition = Math.max(0, Math.min(newRightPosition, maxRightPosition));
+
+        // Ustaw położenie paletki z uwzględnieniem prawa
+        paddle.style.right = (gameAreaWidth - newRightPosition) + '0px'; 
+
+        showPowerUpMessage();
+        powerUpActive = true;
+
+        powerUpTimeout = setTimeout(() => {
+            // Przywraca oryginalny rozmiar paletki i pozycję
+            paddle.style.width = originalPaddleWidth + 'px'; 
+            paddle.style.right = (gameAreaWidth - ((gameAreaWidth / 2) - (paddle.clientWidth / 2))) + 'px'; // Centruje paletkę ponownie
+            powerUpActive = false;
+        }, 3000);
     }
 
     function changeBackgroundColor() {
@@ -75,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ballPosition.x += ballSpeed.x;
         ballPosition.y += ballSpeed.y;
 
-        if (ballPosition.x <= 0 || ballPosition.x >= gameArea.clientWidth - 15) {
+        if (ballPosition.x <= 0 || ballPosition.x >= gameArea.clientWidth - 50) {
             ballSpeed.x = -ballSpeed.x;
         }
 
@@ -87,9 +130,6 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(gameInterval);
             gameActive = false;
             gameOverDisplay.style.display = 'block';
-
-            const finalScoreDisplay = document.getElementById('finalScore');
-            const scoreCount = document.getElementById('scoreCount');
             scoreCount.textContent = score;
             finalScoreDisplay.style.display = 'block';
             finalScoreDisplay.style.opacity = 1;
@@ -124,6 +164,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (score % 10 === 0 && score > 0) {
                 showPointsMessage(score);
                 changeBackgroundColor();
+            }
+
+            // Sprawdź, czy powiększenie może być aktywowane
+            const currentTime = Date.now();
+            if (score % 2 === 1 && (currentTime - lastPowerUpTime >= 35000)) { // Nieparzysty licznik i min. 25 sekund
+                activatePaddlePowerUp();
+                lastPowerUpTime = currentTime; // Ustaw czas aktywacji
             }
         }
 

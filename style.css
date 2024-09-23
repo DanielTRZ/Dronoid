@@ -1,4 +1,5 @@
 
+
 body {
     margin: 0;
     display: flex;
@@ -156,15 +157,46 @@ body {
 
 .points-message {
     position: absolute;
-    top: 57px; /* Ustal miejsce, gdzie chcesz wyświetlić komunikat */
+    top: 65px; /* Ustal miejsce, gdzie chcesz wyświetlić komunikat */
     left: 50%;
     transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.7); /* Przezroczyste tło */
-    color: white; /* Kolor tekstu */
+    color: yellow; /* Kolor tekstu */
     padding: 10px 20px; /* Padding wewnętrzny */
     border-radius: 5px; /* Zaokrąglone rogi */
     font-size: 20px; /* Rozmiar czcionki */
     text-align: center; /* Wyśrodkowanie tekstu */
     z-index: 1000; /* Zwiększa z-index, aby komunikat był na wierzchu */
     display: none; /* Początkowo ukryty */
+}
+/*Czym grasz info*/
+.info-text {
+    position: fixed;
+    top: 60px;
+    right: 420px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+/* Komunikat o powiększeniu */
+.power-up-message {
+    position: absolute;
+    top: 65px; /* Ustal miejsce, gdzie chcesz wyświetlić komunikat */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7); /* Przezroczyste tło */
+    color: yellow; /* Kolor tekstu */
+    padding: 10px 20px; /* Padding wewnętrzny */
+    border-radius: 5px; /* Zaokrąglone rogi */
+    font-size: 20px; /* Rozmiar czcionki */
+    text-align: center; /* Wyśrodkowanie tekstu */
+    z-index: 1000; /* Zwiększa z-index, aby komunikat był na wierzchu */
+    display: none; /* Początkowo ukryty */
+   
 }
