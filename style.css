@@ -23,8 +23,7 @@ body{
     height: 20px;
     background-color: #333;
     transform: translateX(-50%);
-    margin-left: 50px;
-   
+    margin-left: 50px; 
 }
 
 .ball {
