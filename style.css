@@ -10,7 +10,7 @@ background-color: #f0f0f0;
 .game-area {
 position: relative;
 width: 400px;
-    height: 600px;
+height: 600px;
     border: 10px solid #333;
     overflow: hidden;
     background-color: red;
