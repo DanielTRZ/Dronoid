@@ -16,7 +16,7 @@ overflow: hidden;
 background-color: red;
 }
 .paddle {
-    position: absolute;
+position: absolute;
     bottom: 10px;
     left: 50%;
     width: 100px;
