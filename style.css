@@ -12,7 +12,7 @@ position: relative;
 width: 400px;
 height: 600px;
 border: 10px solid #333;
-    overflow: hidden;
+overflow: hidden;
     background-color: red;
 }
 .paddle {
