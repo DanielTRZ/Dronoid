@@ -28,7 +28,7 @@ margin-left: 50px;
 .ball {
 position: absolute;
 width: 15px;
-    height: 15px;
+height: 15px;
     background-color: whitesmoke;
     border-radius: 50%;
     top: 50%;
