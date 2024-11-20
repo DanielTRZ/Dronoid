@@ -36,7 +36,7 @@ left: 50%;
 transform: translate(-50%, -50%);
 }
 #score {
-    position: absolute;
+position: absolute;
     top: 30px;
     left: 40px;
     font-size: 20px;
