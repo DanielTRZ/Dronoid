@@ -80,7 +80,7 @@ transform: scale(1);
 
 #gameOver h2 {
 font-family: 'Bungee', cursive;
-    color: red;
+color: red;
     font-size: 48px;
     animation: pulse 1s infinite;
 }
