@@ -86,7 +86,7 @@ animation: pulse 1s infinite;
 }
 
 @keyframes pulse {
-    0% {
+0% {
         transform: scale(1);
     }
     50% {
