@@ -105,7 +105,7 @@ body {
 background-image: url('dronoid.webp');
 background-size: cover; /* Dopasowuje obraz do rozmiaru ekranu */
 background-position: center; /* Ustawia obraz na środku */
-    background-repeat: no-repeat; /* Zapobiega powtarzaniu obrazu */
+background-repeat: no-repeat; /* Zapobiega powtarzaniu obrazu */
     z-index: -5; /* Ustawia element za innymi, ale nie działa na body */
 } 
 /*wybuch*/
