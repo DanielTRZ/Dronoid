@@ -102,7 +102,7 @@ font-family: 'Press Start 2P', cursive;
     
 }
 body {
-    background-image: url('dronoid.webp');
+background-image: url('dronoid.webp');
     background-size: cover; /* Dopasowuje obraz do rozmiaru ekranu */
     background-position: center; /* Ustawia obraz na środku */
     background-repeat: no-repeat; /* Zapobiega powtarzaniu obrazu */
