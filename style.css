@@ -116,7 +116,7 @@ height: 1px;
 background-color: white;
 border-radius: 50%;
 opacity: 0;
-    pointer-events: none;
+pointer-events: none;
     transform: scale(0);
     transition: transform 0.3s ease-out, opacity 0.3s ease-out;
     margin-left: 20px;
