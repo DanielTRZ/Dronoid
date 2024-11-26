@@ -112,7 +112,7 @@ z-index: -5; /* Ustawia element za innymi, ale nie działa na body */
 .explosion {
 position: fixed;
 width: 1px;
-    height: 1px;
+height: 1px;
     background-color: white;
     border-radius: 50%;
     opacity: 0;
