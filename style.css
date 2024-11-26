@@ -113,7 +113,7 @@ z-index: -5; /* Ustawia element za innymi, ale nie działa na body */
 position: fixed;
 width: 1px;
 height: 1px;
-    background-color: white;
+background-color: white;
     border-radius: 50%;
     opacity: 0;
     pointer-events: none;
