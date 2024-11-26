@@ -114,7 +114,7 @@ position: fixed;
 width: 1px;
 height: 1px;
 background-color: white;
-    border-radius: 50%;
+border-radius: 50%;
     opacity: 0;
     pointer-events: none;
     transform: scale(0);
