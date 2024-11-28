@@ -137,7 +137,7 @@ position: absolute;
 top: 50%; /* Ustawienie na środku */
 left: 50%;
 transform: translate(-50%, -50%);
-    color: yellow;
+color: yellow;
     font-size: 24px;
     font-family: 'Press Start 2P', cursive;
     opacity: 0;
