@@ -153,7 +153,7 @@ background-color: rgba(0, 0, 0, 0.7); /* Przezroczyste tło */
 color: yellow; /* Kolor tekstu */
 padding: 10px 20px; /* Padding wewnętrzny */
 border-radius: 5px; /* Zaokrąglone rogi */
-    font-size: 20px; /* Rozmiar czcionki */
+font-size: 20px; /* Rozmiar czcionki */
     text-align: center; /* Wyśrodkowanie tekstu */
     z-index: 1000; /* Zwiększa z-index, aby komunikat był na wierzchu */
     display: none; /* Początkowo ukryty */
