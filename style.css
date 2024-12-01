@@ -145,7 +145,7 @@ transition: opacity 0.5s ease-out;
 }
 
 .points-message {
-    position: absolute;
+position: absolute;
     top: 65px; /* Ustal miejsce, gdzie chcesz wyświetlić komunikat */
     left: 50%;
     transform: translateX(-50%);
