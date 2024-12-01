@@ -160,7 +160,7 @@ display: none; /* Początkowo ukryty */
 }
 /*Czym grasz info*/
 .info-text {
-    position: fixed;
+position: fixed;
     top: 60px;
     right: 420px;
 font-family: 'Press Start 2P', cursive;
