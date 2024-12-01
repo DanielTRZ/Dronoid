@@ -155,7 +155,7 @@ padding: 10px 20px; /* Padding wewnętrzny */
 border-radius: 5px; /* Zaokrąglone rogi */
 font-size: 20px; /* Rozmiar czcionki */
 text-align: center; /* Wyśrodkowanie tekstu */
-    z-index: 1000; /* Zwiększa z-index, aby komunikat był na wierzchu */
+z-index: 1000; /* Zwiększa z-index, aby komunikat był na wierzchu */
     display: none; /* Początkowo ukryty */
 }
 /*Czym grasz info*/
