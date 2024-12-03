@@ -180,7 +180,7 @@ top: 65px; /* Ustal miejsce, gdzie chcesz wyświetlić komunikat */
 left: 50%;
 transform: translateX(-50%);
 background-color: rgba(0, 0, 0, 0.7); /* Przezroczyste tło */
-    color: yellow; /* Kolor tekstu */
+color: yellow; /* Kolor tekstu */
     padding: 10px 20px; /* Padding wewnętrzny */
     border-radius: 5px; /* Zaokrąglone rogi */
     font-size: 20px; /* Rozmiar czcionki */
