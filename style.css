@@ -186,6 +186,5 @@ left: 50%;
     font-size: 20px; /* Rozmiar czcionki */
     text-align: center; /* Wyśrodkowanie tekstu */
     z-index: 1000; /* Zwiększa z-index, aby komunikat był na wierzchu */
-display: none; /* Początkowo ukryty */
-   
+display: none; /* Początkowo ukryty */  
 }
