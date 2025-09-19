@@ -208,3 +208,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Gra startuje tylko po wciśnięciu przycisku start
     paddle.style.top = gameArea.clientHeight - 60 + 'px';
 });
+
