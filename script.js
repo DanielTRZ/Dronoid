@@ -209,3 +209,4 @@ document.addEventListener('DOMContentLoaded', () => {
     paddle.style.top = gameArea.clientHeight - 60 + 'px';
 });
 
+
