@@ -28,16 +28,9 @@ body {
     margin-bottom: 10px;
     font-size: 14px;
     text-align: center;
-    background-color: yellow; /* Poprawione: Ustawienie tła */
+    background-color: yellow;
     padding: 5px 0;
     border-radius: 5px;
-    /* Shimmer effect dla tekstu */
-    background-image: linear-gradient(to right, #333 20%, #000 40%, #333 60%);
-    background-size: 200% auto;
-    color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
-    animation: shimmer 5s linear infinite;
 }
 
 #stats-bar > div {
@@ -86,6 +79,7 @@ body {
     height: 20px;
     background-color: #333;
     transform: translateX(-50%);
+    border-radius: 5px;
 }
 .ball {
     position: absolute;
