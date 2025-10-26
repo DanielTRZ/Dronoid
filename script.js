@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             nextLevelMessage.style.display = 'none';
             level++;
-            createBricksForLevel(level);
+            generateRandomBricks(); // Zmieniono na generowanie losowych klocków
             resetBall();
             updateStats();
         }, 2000);
@@ -162,10 +162,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Kolizje z klockami
-            let bricksLeft = false;
+            let bricksLeft = 0;
             bricks.forEach((brick) => {
-                 if (brick.offsetParent !== null) {
-                    bricksLeft = true;
+                if (brick.offsetParent !== null) {
+                    bricksLeft++;
                     const brickRect = brick.getBoundingClientRect();
                     if (
                         ballRect.bottom >= brickRect.top &&
@@ -181,8 +181,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            if (!bricksLeft && !infinityMode && bricks.length > 0) {
-                proceedToNextLevel();
+            if (bricksLeft === 0 && !infinityMode) {
+                // Sprawdź, czy funkcja createBricksForLevel została już wywołana w tej klatce
+                if (bricks.length > 0) {
+                    proceedToNextLevel();
+                }
             }
 
             updatePowerUps();
@@ -232,6 +235,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if(brickIndex > -1) bricks.splice(brickIndex, 1);
 
             if (Math.random() < 0.3) createPowerUp(brickRect.left, brickRect.top);
+
+            // Sprawdź, czy wszystkie klocki zostały zbite
+            if (bricksContainer.childElementCount === 0 && !infinityMode) {
+                proceedToNextLevel();
+            }
         }, 300);
     }
 
