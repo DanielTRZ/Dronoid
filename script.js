@@ -1,27 +1,29 @@
 
 document.addEventListener('DOMContentLoaded', () => {
+    // --- DOM Elements ---
     const paddle = document.getElementById('paddle');
     const ball = document.getElementById('ball');
     const gameArea = document.querySelector('.game-area');
     const scoreDisplay = document.getElementById('score');
+    const bouncesDisplay = document.getElementById('bounces'); // Nowy element
     const livesDisplay = document.getElementById('lives');
     const levelDisplay = document.getElementById('level');
     const startButton = document.getElementById('startButton');
     const infinityModeButton = document.getElementById('infinityModeButton');
     const gameOverDisplay = document.getElementById('gameOver');
     const restartButton = document.getElementById('restartButton');
-    const dronoidTitle = document.getElementById('dronoidTitle');
-    const finalScoreDisplay = document.getElementById('finalScore');
-    const scoreCount = document.getElementById('scoreCount');
     const bricksContainer = document.getElementById('bricks-container');
     const powerUpMessage = document.getElementById('powerUpMessage');
     const bumElement = document.getElementById('bum');
+    const nextLevelMessage = document.getElementById('nextLevelMessage'); // Nowy element
 
+    // --- Game State ---
     let paddlePosition = (gameArea.clientWidth / 2) - (paddle.clientWidth / 2);
     let ballPosition = { x: gameArea.clientWidth / 2 - 7.5, y: gameArea.clientHeight / 2 };
     let ballSpeed = { x: 2, y: -4 };
     let gameInterval;
     let score = 0;
+    let bounces = 0; // Nowa zmienna
     let lives = 3;
     let level = 1;
     let gameActive = false;
@@ -29,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let bricks = [];
     let powerUps = [];
 
+    // --- Constants ---
     const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF0000', '#FF33A8', '#7FFFD4', '#556B2F', '#708090'];
     let currentColorIndex = 0;
 
@@ -56,19 +59,13 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
     ];
 
-    function showDronoidTitle() {
-        dronoidTitle.style.display = 'block';
-        setTimeout(() => {
-            dronoidTitle.style.display = 'none';
-            startActualGame();
-        }, 2500);
-    }
-
+    // --- Game Flow Functions ---
     function startActualGame(isInfinityMode = false) {
         infinityMode = isInfinityMode;
         startButton.style.display = 'none';
         infinityModeButton.style.display = 'none';
         gameOverDisplay.style.display = 'none';
+        gameArea.classList.add('game-active'); // Ukryj kursor
 
         resetGame();
         if (infinityMode) {
@@ -84,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function resetGame() {
         score = 0;
+        bounces = 0; // Resetuj odbicia
         lives = 3;
         level = 1;
         updateStats();
@@ -92,24 +90,174 @@ document.addEventListener('DOMContentLoaded', () => {
         clearPowerUps();
     }
 
-    function resetBall() {
-        ballPosition = { x: gameArea.clientWidth / 2 - 7.5, y: gameArea.clientHeight / 2 };
-        ballSpeed = { x: 2, y: -4 };
-        ball.style.left = ballPosition.x + 'px';
-        ball.style.top = ballPosition.y + 'px';
+    function endGame() {
+        gameActive = false;
+        clearInterval(gameInterval);
+        gameOverDisplay.style.display = 'block';
+        gameArea.classList.remove('game-active'); // Pokaż kursor
     }
 
+    function proceedToNextLevel() {
+        ballSpeed = { x: 0, y: 0 }; // Zatrzymaj piłkę
+        nextLevelMessage.style.display = 'block';
+
+        setTimeout(() => {
+            nextLevelMessage.style.display = 'none';
+            level++;
+            createBricksForLevel(level);
+            resetBall();
+            updateStats();
+        }, 2000); // Czekaj 2 sekundy
+    }
+
+    // --- Update Functions ---
     function updateStats() {
-        scoreDisplay.textContent = "Licznik odbić: " + score;
+        scoreDisplay.textContent = "Punkty: " + score;
+        bouncesDisplay.textContent = "Odbicia: " + bounces; // Aktualizuj licznik odbić
         livesDisplay.textContent = "Życia: " + lives;
         if (!infinityMode) {
             levelDisplay.textContent = "Poziom: " + level;
         }
     }
 
+    function updateGame() {
+        if (!gameActive) return;
+
+        ballPosition.x += ballSpeed.x;
+        ballPosition.y += ballSpeed.y;
+
+        // Wall collision
+        if (ballPosition.x <= 0 || ballPosition.x >= gameArea.clientWidth - 15) {
+            ballSpeed.x = -ballSpeed.x;
+        }
+        if (ballPosition.y <= 0) {
+            ballSpeed.y = -ballSpeed.y;
+        }
+
+        // Paddle collision
+        const paddleRect = paddle.getBoundingClientRect();
+        const ballRect = ball.getBoundingClientRect();
+        if (
+            ballRect.bottom >= paddleRect.top &&
+            ballRect.top <= paddleRect.bottom &&
+            ballRect.right >= paddleRect.left &&
+            ballRect.left <= paddleRect.right &&
+            ballSpeed.y > 0
+        ) {
+            ballSpeed.y = -ballSpeed.y;
+            bounces++; // Zliczaj odbicia
+            updateStats();
+            paddle.style.backgroundColor = 'yellow';
+            showBumEffect();
+            setTimeout(() => paddle.style.backgroundColor = '#333', 100);
+        }
+
+        // Brick collision
+        let bricksLeft = false;
+        bricks.forEach((brick) => {
+             if (brick.offsetParent !== null) {
+                bricksLeft = true;
+                const brickRect = brick.getBoundingClientRect();
+                if (
+                    ballRect.bottom >= brickRect.top &&
+                    ballRect.top <= brickRect.bottom &&
+                    ballRect.right >= brickRect.left &&
+                    ballRect.left <= brickRect.right
+                ) {
+                    ballSpeed.y = -ballSpeed.y;
+                    handleBrickRemoval(brick);
+                    score += 10;
+                    updateStats();
+                }
+            }
+        });
+
+        if (!bricksLeft && !infinityMode) {
+            proceedToNextLevel();
+        }
+
+        updatePowerUps();
+
+        // Bottom wall collision (lose life)
+        if (ballPosition.y >= gameArea.clientHeight - 15) {
+            lives--;
+            updateStats();
+            if (lives <= 0) {
+                endGame();
+            } else {
+                resetBall();
+            }
+        }
+
+        ball.style.left = ballPosition.x + 'px';
+        ball.style.top = ballPosition.y + 'px';
+    }
+
+    // --- Helper Functions ---
+    function resetBall() {
+        ballPosition = { x: gameArea.clientWidth / 2 - 7.5, y: gameArea.clientHeight / 2 };
+        // Losowy kierunek startowy
+        let angle = (Math.random() * Math.PI / 2) + Math.PI / 4;
+        ballSpeed = { x: 4 * Math.cos(angle), y: -4 * Math.sin(angle) };
+        if (Math.random() > 0.5) ballSpeed.x = -ballSpeed.x;
+
+        ball.style.left = ballPosition.x + 'px';
+        ball.style.top = ballPosition.y + 'px';
+    }
+
+    function handleBrickRemoval(brick) {
+        const brickRect = brick.getBoundingClientRect();
+        createExplosion(brickRect.left + brickRect.width / 2, brickRect.top + brickRect.height / 2);
+        brick.classList.add('blinking');
+
+        setTimeout(() => {
+            if (brick.parentNode) {
+                brick.remove(); // Usunięcie z DOM
+            }
+            if (Math.random() < 0.3) createPowerUp(brickRect.left, brickRect.top);
+        }, 300);
+    }
+
+    function showBumEffect() {
+        // Pozycja BUM jest teraz nieco wyżej nad paletką
+        bumElement.style.left = (paddle.offsetLeft + paddle.offsetWidth / 2 - bumElement.offsetWidth / 2) + 'px';
+        bumElement.style.top = (paddle.offsetTop - bumElement.offsetHeight - 10) + 'px'; // 10px wyżej
+        bumElement.style.display = 'block';
+        setTimeout(() => {
+            bumElement.style.display = 'none';
+        }, 300);
+    }
+
+    // --- Event Listeners ---
+    startButton.addEventListener('click', () => startActualGame(false));
+    infinityModeButton.addEventListener('click', () => startActualGame(true));
+    restartButton.addEventListener('click', () => {
+        gameOverDisplay.style.display = 'none';
+        startButton.style.display = 'block';
+        infinityModeButton.style.display = 'block';
+    });
+
+    document.addEventListener('mousemove', (event) => {
+        if (!gameActive) return; // Paletka aktywna tylko w trakcie gry
+        const gameAreaRect = gameArea.getBoundingClientRect();
+        paddlePosition = event.clientX - gameAreaRect.left - paddle.clientWidth / 2;
+        paddlePosition = Math.max(0, Math.min(gameArea.clientWidth - paddle.clientWidth, paddlePosition));
+        paddle.style.left = paddlePosition + 'px';
+    });
+
+    document.addEventListener('touchmove', (event) => {
+        if (!gameActive) return; // Paletka aktywna tylko w trakcie gry
+        const gameAreaRect = gameArea.getBoundingClientRect();
+        const touch = event.touches[0];
+        paddlePosition = touch.clientX - gameAreaRect.left - paddle.clientWidth / 2;
+        paddlePosition = Math.max(0, Math.min(gameArea.clientWidth - paddle.clientWidth, paddlePosition));
+        paddle.style.left = paddlePosition + 'px';
+    });
+
+    // --- Utility Functions (Bricks, PowerUps, etc. - bez większych zmian) ---
     function createBricksForLevel(level) {
         clearBricks();
-        const layout = levelLayouts[(level - 1) % levelLayouts.length]; // Cycle through layouts
+        const layout = levelLayouts[(level - 1) % levelLayouts.length];
         for (let row = 0; row < layout.length; row++) {
             for (let col = 0; col < layout[row].length; col++) {
                 if (layout[row][col] === 1) {
@@ -117,11 +265,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     brick.classList.add('brick');
                     brick.style.gridRowStart = row + 1;
                     brick.style.gridColumnStart = col + 1;
-
-                    if (level % 10 === 0 && row === 0 && col === Math.floor(layout[row].length / 2)) {
-                        brick.classList.add('boss');
-                        brick.dataset.hits = 3; // Boss requires 3 hits
-                    }
                     bricksContainer.appendChild(brick);
                     bricks.push(brick);
                 }
@@ -170,12 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 powerUps.splice(index, 1);
             }
 
-            if (
-                powerUpRect.bottom >= paddleRect.top &&
-                powerUpRect.top <= paddleRect.bottom &&
-                powerUpRect.right >= paddleRect.left &&
-                powerUpRect.left <= paddleRect.right
-            ) {
+            if (powerUpRect.bottom >= paddleRect.top && powerUpRect.top <= paddleRect.bottom && powerUpRect.right >= paddleRect.left && powerUpRect.left <= paddleRect.right) {
                 activatePowerUp(powerUp.dataset.type);
                 powerUp.remove();
                 powerUps.splice(index, 1);
@@ -213,15 +351,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2000);
     }
 
-    function showBumEffect() {
-        bumElement.style.left = (paddle.offsetLeft + paddle.offsetWidth / 2 - bumElement.offsetWidth / 2) + 'px';
-        bumElement.style.top = (paddle.offsetTop - bumElement.offsetHeight) + 'px';
-        bumElement.style.display = 'block';
-        setTimeout(() => {
-            bumElement.style.display = 'none';
-        }, 300);
-    }
-
     function createExplosion(x, y) {
         const particleCount = 8;
         const gameAreaRect = gameArea.getBoundingClientRect();
@@ -243,9 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let life = 100;
             const animateParticle = () => {
                 if (life <= 0) {
-                    if (particle.parentNode) {
-                        particle.remove();
-                    }
+                    if (particle.parentNode) particle.remove();
                     return;
                 }
                 life -= 4;
@@ -259,145 +386,4 @@ document.addEventListener('DOMContentLoaded', () => {
             animateParticle();
         }
     }
-
-    function changeBackgroundColor() {
-        currentColorIndex = (currentColorIndex + 1) % colors.length;
-        gameArea.style.transition = 'background-color 1s';
-        gameArea.style.backgroundColor = colors[currentColorIndex];
-    }
-
-    function updateGame() {
-        if (!gameActive) return;
-
-        ballPosition.x += ballSpeed.x;
-        ballPosition.y += ballSpeed.y;
-
-        // Wall collision
-        if (ballPosition.x <= 0 || ballPosition.x >= gameArea.clientWidth - 15) {
-            ballSpeed.x = -ballSpeed.x;
-        }
-        if (ballPosition.y <= 0) {
-            ballSpeed.y = -ballSpeed.y;
-        }
-
-        // Paddle collision
-        const paddleRect = paddle.getBoundingClientRect();
-        const ballRect = ball.getBoundingClientRect();
-        if (
-            ballRect.bottom >= paddleRect.top &&
-            ballRect.top <= paddleRect.bottom &&
-            ballRect.right >= paddleRect.left &&
-            ballRect.left <= paddleRect.right &&
-            ballSpeed.y > 0
-        ) {
-            ballSpeed.y = -ballSpeed.y;
-            score++;
-            updateStats();
-            paddle.style.backgroundColor = 'yellow';
-            showBumEffect();
-            setTimeout(() => paddle.style.backgroundColor = '#333', 100);
-            if (score % 10 === 0) changeBackgroundColor();
-        }
-
-        // Brick collision
-        bricks.forEach((brick, index) => {
-            if (brick.offsetParent === null) return; // Skip already removed bricks
-            const brickRect = brick.getBoundingClientRect();
-            if (
-                ballRect.bottom >= brickRect.top &&
-                ballRect.top <= brickRect.bottom &&
-                ballRect.right >= brickRect.left &&
-                ballRect.left <= brickRect.right
-            ) {
-                ballSpeed.y = -ballSpeed.y;
-
-                const handleBrickRemoval = (brick, index) => {
-                    createExplosion(brickRect.left + brickRect.width / 2, brickRect.top + brickRect.height / 2);
-                    brick.classList.add('blinking');
-                    setTimeout(() => {
-                        if (brick.parentNode) {
-                            brick.remove();
-                        }
-                        const brickIndex = bricks.indexOf(brick);
-                        if (brickIndex > -1) {
-                            bricks.splice(brickIndex, 1);
-                        }
-                         if (Math.random() < 0.3) createPowerUp(brickRect.left, brickRect.top);
-                    }, 300);
-                };
-
-                if (brick.classList.contains('boss')) {
-                    brick.dataset.hits--;
-                    if (brick.dataset.hits <= 0) {
-                        handleBrickRemoval(brick, index);
-                    }
-                } else {
-                    handleBrickRemoval(brick, index);
-                }
-                score += 10;
-                updateStats();
-
-                if (bricks.length === 0 && !infinityMode) {
-                    level++;
-                    createBricksForLevel(level);
-                    resetBall();
-                }
-            }
-        });
-
-        updatePowerUps();
-
-        // Bottom wall collision (lose life)
-        if (ballPosition.y >= gameArea.clientHeight - 15) {
-            lives--;
-            updateStats();
-            if (lives <= 0) {
-                endGame();
-            } else {
-                resetBall();
-            }
-        }
-
-        ball.style.left = ballPosition.x + 'px';
-        ball.style.top = ballPosition.y + 'px';
-    }
-
-    function endGame() {
-        gameActive = false;
-        clearInterval(gameInterval);
-        gameOverDisplay.style.display = 'block';
-        scoreCount.textContent = score;
-        finalScoreDisplay.style.display = 'block';
-        finalScoreDisplay.style.opacity = 1;
-
-        setTimeout(() => {
-            finalScoreDisplay.style.opacity = 0;
-            setTimeout(() => {
-                finalScoreDisplay.style.display = 'none';
-            }, 900);
-        }, 5000);
-    }
-
-    startButton.addEventListener('click', () => showDronoidTitle(false));
-    infinityModeButton.addEventListener('click', () => startActualGame(true));
-    restartButton.addEventListener('click', () => {
-        gameOverDisplay.style.display = 'none';
-        startButton.style.display = 'block';
-        infinityModeButton.style.display = 'block';
-    });
-
-    document.addEventListener('mousemove', (event) => {
-        const gameAreaRect = gameArea.getBoundingClientRect();
-        paddlePosition = event.clientX - gameAreaRect.left - paddle.clientWidth / 2;
-        paddlePosition = Math.max(0, Math.min(gameArea.clientWidth - paddle.clientWidth, paddlePosition));
-        paddle.style.left = paddlePosition + 'px';
-    });
-
-    document.addEventListener('touchmove', (event) => {
-        const gameAreaRect = gameArea.getBoundingClientRect();
-        const touch = event.touches[0];
-        paddlePosition = touch.clientX - gameAreaRect.left - paddle.clientWidth / 2;
-        paddlePosition = Math.max(0, Math.min(gameArea.clientWidth - paddle.clientWidth, paddlePosition));
-        paddle.style.left = paddlePosition + 'px';
-    });
 });
