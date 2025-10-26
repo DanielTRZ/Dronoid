@@ -162,7 +162,8 @@ display: none; /* Początkowo ukryty */
 .info-text {
 position: fixed;
 top: 60px;
-right: 420px;
+left: 50%;
+transform: translateX(-50%);
 font-family: 'Press Start 2P', cursive;
 font-size: 16px;
 color: rgba(255, 255, 255, 0.8);
