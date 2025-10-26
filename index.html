@@ -8,32 +8,36 @@
 <link rel="stylesheet" href="style.css">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Bungee&display=swap" rel="stylesheet">
 </head>
-<body> 
-   
-<div class="game-area">
-<h1 id="dronoidTitle" style="display: none;">Dronoid</h1>
-<div class="paddle" id="paddle"></div>
-<div class="ball" id="ball"></div>
-<div id="score">Licznik odbić: 0</div>
-        
-<div id="pointsMessage" class="points-message" style="display: none;"></div>
-<div id="finalScore" class="final-score" style="display: none;">Gościu, obiłeś piłkę: <span id="scoreCount">0</span> razy</div>
-<div id="explosion" class="explosion">BUM</div>
-<!-- Nowy element dla napisu Gościu powiększenie -->
-<div id="powerUpMessage" class="power-up-message" style="display: none;">Gościu powiększenie!</div>
+<body>
+
+<div class="game-container">
+    <div id="stats-bar">
+        <div id="score">Licznik odbić: 0</div>
+        <div id="lives">Życia: 3</div>
+        <div id="level">Poziom: 1</div>
+    </div>
+    <div class="game-area">
+        <h1 id="dronoidTitle" style="display: none;">Dronoid</h1>
+        <div id="bricks-container"></div>
+        <div class="paddle" id="paddle"></div>
+        <div class="ball" id="ball"></div>
+        <div id="bum" class="bum-effect">BUM</div>
+        <div id="finalScore" class="final-score" style="display: none;">Gościu, obiłeś piłkę: <span id="scoreCount">0</span> razy</div>
+    </div>
+    <div class="info-text">Grasz mychą albo panelem dotykowym</div>
+    <div id="powerUpMessage" style="display: none;"></div>
 </div>
-    
-<div class="info-text">Grasz mychą albo panelem dotykowym</div>
-    
-<button id="startButton">Zacznij odbijać</button>
+
+<div class="controls">
+    <button id="startButton">Zacznij odbijać</button>
+    <button id="infinityModeButton">Tryb nieskończoności</button>
+</div>
+
 <div id="gameOver" style="display: none;">
-<h2>Game Over</h2>
-<button id="restartButton">Odbijaj od nowa</button>
+    <h2>Game Over</h2>
+    <button id="restartButton">Odbijaj od nowa</button>
 </div>
-    
+
 <script src="script.js"></script>
 </body>
 </html>
-
-
-
