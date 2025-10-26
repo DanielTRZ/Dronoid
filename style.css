@@ -203,6 +203,24 @@ transition: opacity 0.5s ease-out;
     font-weight: bold;
 }
 
+.brick.blinking {
+    animation: blink 0.3s steps(2, start) infinite;
+}
+
+@keyframes blink {
+    to {
+        visibility: hidden;
+    }
+}
+
+.brick-explosion-particle {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background-color: #ffc107;
+    border-radius: 50%;
+}
+
 /*Czym grasz info*/
 .info-text {
 position: fixed;
