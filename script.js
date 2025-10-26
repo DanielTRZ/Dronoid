@@ -222,6 +222,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     }
 
+    function createExplosion(x, y) {
+        const particleCount = 8;
+        const gameAreaRect = gameArea.getBoundingClientRect();
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('brick-explosion-particle');
+            gameArea.appendChild(particle);
+
+            const angle = (i / particleCount) * 2 * Math.PI;
+            const speed = Math.random() * 2 + 1;
+            let particleX = x - gameAreaRect.left;
+            let particleY = y - gameAreaRect.top;
+            const dx = Math.cos(angle) * speed;
+            const dy = Math.sin(angle) * speed;
+
+            particle.style.left = particleX + 'px';
+            particle.style.top = particleY + 'px';
+
+            let life = 100;
+            const animateParticle = () => {
+                if (life <= 0) {
+                    if (particle.parentNode) {
+                        particle.remove();
+                    }
+                    return;
+                }
+                life -= 4;
+                particleX += dx;
+                particleY += dy;
+                particle.style.left = particleX + 'px';
+                particle.style.top = particleY + 'px';
+                particle.style.opacity = life / 100;
+                requestAnimationFrame(animateParticle);
+            };
+            animateParticle();
+        }
+    }
+
     function changeBackgroundColor() {
         currentColorIndex = (currentColorIndex + 1) % colors.length;
         gameArea.style.transition = 'background-color 1s';
@@ -272,17 +310,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 ballRect.left <= brickRect.right
             ) {
                 ballSpeed.y = -ballSpeed.y;
+
+                const handleBrickRemoval = (brick, index) => {
+                    createExplosion(brickRect.left + brickRect.width / 2, brickRect.top + brickRect.height / 2);
+                    brick.classList.add('blinking');
+                    setTimeout(() => {
+                        if (brick.parentNode) {
+                            brick.remove();
+                        }
+                        const brickIndex = bricks.indexOf(brick);
+                        if (brickIndex > -1) {
+                            bricks.splice(brickIndex, 1);
+                        }
+                         if (Math.random() < 0.3) createPowerUp(brickRect.left, brickRect.top);
+                    }, 300);
+                };
+
                 if (brick.classList.contains('boss')) {
                     brick.dataset.hits--;
                     if (brick.dataset.hits <= 0) {
-                        brick.remove();
-                        bricks.splice(index, 1);
-                         if (Math.random() < 0.3) createPowerUp(brickRect.left, brickRect.top);
+                        handleBrickRemoval(brick, index);
                     }
                 } else {
-                    brick.remove();
-                    bricks.splice(index, 1);
-                    if (Math.random() < 0.3) createPowerUp(brickRect.left, brickRect.top);
+                    handleBrickRemoval(brick, index);
                 }
                 score += 10;
                 updateStats();
