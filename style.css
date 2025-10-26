@@ -1,20 +1,59 @@
-body{
-margin: 0;
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-height: 100vh;
-background-color: #f0f0f0;
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    font-family: 'Press Start 2P', cursive;
 }
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#stats-bar {
+    display: flex;
+    justify-content: space-between;
+    width: 420px;
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #fff;
+}
+
 .game-area {
-position: relative;
-width: 400px;
-height: 600px;
-border: 10px solid #333;
-overflow: hidden;
-background-color: red;
+    position: relative;
+    width: 400px;
+    height: 600px;
+    border: 10px solid #333;
+    overflow: hidden;
+    background-color: red;
 }
+
+#bricks-container {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    height: 250px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-gap: 2px;
+}
+
+.brick {
+    background-color: #007bff;
+    border: 1px solid #fff;
+}
+
+.brick.boss {
+    background-color: #ff0000;
+    animation: pulse 1s infinite;
+}
+
 .paddle {
 position: absolute;
 bottom: 10px;
@@ -23,7 +62,7 @@ width: 100px;
 height: 20px;
 background-color: #333;
 transform: translateX(-50%);
-margin-left: 50px; 
+margin-left: 50px;
 }
 .ball {
 position: absolute;
@@ -99,7 +138,7 @@ transform: scale(1);
 
 body, button, #score, #startButton, #restartButton {
 font-family: 'Press Start 2P', cursive;
-    
+
 }
 body {
 background-image: url('dronoid.webp');
@@ -107,7 +146,7 @@ background-size: cover; /* Dopasowuje obraz do rozmiaru ekranu */
 background-position: center; /* Ustawia obraz na środku */
 background-repeat: no-repeat; /* Zapobiega powtarzaniu obrazu */
 z-index: -5; /* Ustawia element za innymi, ale nie działa na body */
-} 
+}
 /*wybuch*/
 .explosion {
 position: fixed;
@@ -144,26 +183,33 @@ opacity: 0;
 transition: opacity 0.5s ease-out;
 }
 
-.points-message {
-position: absolute;
-top: 65px; /* Ustal miejsce, gdzie chcesz wyświetlić komunikat */
-left: 50%;
-transform: translateX(-50%);
-background-color: rgba(0, 0, 0, 0.7); /* Przezroczyste tło */
-color: yellow; /* Kolor tekstu */
-padding: 10px 20px; /* Padding wewnętrzny */
-border-radius: 5px; /* Zaokrąglone rogi */
-font-size: 20px; /* Rozmiar czcionki */
-text-align: center; /* Wyśrodkowanie tekstu */
-z-index: 1000; /* Zwiększa z-index, aby komunikat był na wierzchu */
-display: none; /* Początkowo ukryty */
+.bum-effect {
+    position: absolute;
+    display: none;
+    color: yellow;
+    font-size: 30px;
+    font-family: 'Press Start 2P', cursive;
 }
+
+.power-up {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #ffd700;
+    color: #000;
+    text-align: center;
+    line-height: 20px;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
 /*Czym grasz info*/
 .info-text {
 position: fixed;
 top: 60px;
-left: 50%;
-transform: translateX(-50%);
+left: 0;
+width: 100%;
+text-align: center;
 font-family: 'Press Start 2P', cursive;
 font-size: 16px;
 color: rgba(255, 255, 255, 0.8);
@@ -172,20 +218,5 @@ padding: 10px;
 border-radius: 5px;
 z-index: 9999;
 pointer-events: none;
-}
-
-/* Komunikat o powiększeniu */
-.power-up-message {
-position: absolute;
-top: 65px; /* Ustal miejsce, gdzie chcesz wyświetlić komunikat */
-left: 50%;
-transform: translateX(-50%);
-background-color: rgba(0, 0, 0, 0.7); /* Przezroczyste tło */
-color: yellow; /* Kolor tekstu */
-padding: 10px 20px; /* Padding wewnętrzny */
-border-radius: 5px; /* Zaokrąglone rogi */
-font-size: 20px; /* Rozmiar czcionki */
-text-align: center; /* Wyśrodkowanie tekstu */
-z-index: 1000; /* Zwiększa z-index, aby komunikat był na wierzchu */
-display: none; /* Początkowo ukryty */  
+box-sizing: border-box; /* Dodano dla pewności */
 }
