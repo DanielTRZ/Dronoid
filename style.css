@@ -28,8 +28,11 @@ body {
     margin-bottom: 10px;
     font-size: 14px;
     text-align: center;
-    /* Shimmer effect */
-    background: linear-gradient(to right, #333 20%, #000 40%, #333 60%);
+    background-color: yellow; /* Poprawione: Ustawienie tła */
+    padding: 5px 0;
+    border-radius: 5px;
+    /* Shimmer effect dla tekstu */
+    background-image: linear-gradient(to right, #333 20%, #000 40%, #333 60%);
     background-size: 200% auto;
     color: transparent;
     -webkit-background-clip: text;
@@ -211,8 +214,7 @@ body {
 }
 
 .info-text {
-    width: auto;
-    max-width: 90%;
+    width: 420px;
     text-align: center;
     font-family: 'Press Start 2P', cursive;
     font-size: 16px;
