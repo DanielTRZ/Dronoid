@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             nextLevelMessage.style.display = 'none';
             level++;
-            generateRandomBricks(); // Zmieniono na generowanie losowych klocków
+            createBricksForLevel(level); // Wczytaj następny zdefiniowany poziom
             resetBall();
             updateStats();
         }, 2000);
@@ -187,13 +187,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             });
-
-            if (bricksLeft === 0 && !infinityMode) {
-                // Sprawdź, czy funkcja createBricksForLevel została już wywołana w tej klatce
-                if (bricks.length > 0) {
-                    proceedToNextLevel();
-                }
-            }
 
             updatePowerUps();
 
