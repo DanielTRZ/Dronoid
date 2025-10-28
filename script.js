@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showBumEffect() {
         bumElement.style.left = (paddle.offsetLeft + paddle.offsetWidth / 2 - bumElement.offsetWidth / 2) + 'px';
-        bumElement.style.top = (paddle.offsetTop - bumElement.offsetHeight - 10) + 'px';
+        bumElement.style.top = (paddle.offsetTop - bumElement.offsetHeight - 30) + 'px';
         bumElement.style.display = 'block';
         setTimeout(() => {
             bumElement.style.display = 'none';
