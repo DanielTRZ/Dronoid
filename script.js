@@ -89,6 +89,12 @@ document.addEventListener('DOMContentLoaded', () => {
         clearBricks();
         clearPowerUps();
         resetBall();
+        resetPaddle();
+    }
+
+    function resetPaddle() {
+        paddlePosition = (gameArea.clientWidth / 2) - (paddle.offsetWidth / 2);
+        paddle.style.left = paddlePosition + 'px';
     }
 
     function endGame() {
