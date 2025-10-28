@@ -44,6 +44,7 @@ body {
     border: 10px solid #333;
     overflow: hidden;
     background-color: red;
+    box-sizing: border-box;
 }
 
 .game-area.game-active {
@@ -215,11 +216,6 @@ body {
     pointer-events: none;
     box-sizing: border-box;
     margin-top: 15px;
-    /* Shimmer effect */
-    background: linear-gradient(to right, #333 20%, #000 40%, #333 60%);
-    background-size: 200% auto;
-    color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
-    animation: shimmer 5s linear infinite;
+    background-color: yellow;
+    color: #333;
 }
