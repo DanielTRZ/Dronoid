@@ -24,7 +24,7 @@ body {
 #stats-bar {
     display: flex;
     justify-content: space-around;
-    width: 420px;
+    width: 400px;
     margin-bottom: 10px;
     font-size: 14px;
     text-align: center;
@@ -39,12 +39,11 @@ body {
 
 .game-area {
     position: relative;
-    width: 420px;
+    width: 400px;
     height: 600px;
     border: 10px solid #333;
     overflow: hidden;
     background-color: red;
-    box-sizing: border-box;
 }
 
 .game-area.game-active {
@@ -207,7 +206,7 @@ body {
 }
 
 .info-text {
-    width: 420px;
+    width: 400px;
     text-align: center;
     font-family: 'Press Start 2P', cursive;
     font-size: 16px;
