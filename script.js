@@ -179,7 +179,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         ballRect.right >= brickRect.left &&
                         ballRect.left <= brickRect.right
                     ) {
-                        ballSpeed.y = -ballSpeed.y;
+                        // Zmiana kierunku piłki tak, aby zawsze leciała w dół po uderzeniu w klocek
+                        ballSpeed.y = Math.abs(ballSpeed.y);
                         handleBrickRemoval(brick);
                         score += 10;
                         updateStats();
