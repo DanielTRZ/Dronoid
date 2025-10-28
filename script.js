@@ -32,27 +32,30 @@ document.addEventListener('DOMContentLoaded', () => {
     let infinityMode = false;
     let bricks = [];
     let powerUps = [];
+    let isPaddleMagnetic = false;
 
     const levelLayouts = [
-        // ... (layouts remain the same)
+        // Poziom 1
         [
             [1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 2, 1, 1, 1, 1, 1, 1],
             [0, 1, 1, 0, 0, 1, 1, 0],
             [0, 0, 1, 0, 0, 1, 0, 0],
             [1, 1, 1, 1, 1, 1, 1, 1]
         ],
+        // Poziom 2
         [
             [1, 0, 1, 0, 1, 0, 1, 0],
-            [0, 1, 0, 1, 0, 1, 0, 1],
+            [0, 1, 0, 2, 0, 1, 0, 1],
             [1, 0, 1, 0, 1, 0, 1, 0],
             [0, 1, 0, 1, 0, 1, 0, 1],
             [1, 0, 1, 0, 1, 0, 1, 0]
         ],
+        // Poziom 3
         [
             [1, 1, 1, 1, 1, 1, 1, 1],
             [1, 0, 0, 0, 0, 0, 0, 1],
-            [1, 0, 1, 1, 1, 1, 0, 1],
+            [1, 0, 1, 2, 1, 1, 0, 1],
             [1, 0, 0, 0, 0, 0, 0, 1],
             [1, 1, 1, 1, 1, 1, 1, 1]
         ]
@@ -202,6 +205,23 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Logika magnetycznej paletki
+        if (isPaddleMagnetic) {
+            const paddleRect = paddle.getBoundingClientRect();
+            const ballRect = ball.getBoundingClientRect();
+            const paddleCenterX = paddleRect.left + paddleRect.width / 2;
+            const ballCenterX = ballRect.left + ballRect.width / 2;
+            const distance = Math.sqrt(Math.pow(paddleCenterX - ballCenterX, 2) + Math.pow(paddleRect.top - ballRect.bottom, 2));
+
+            if (distance < 60 && !ballIsOnPaddle) {
+                const pullFactor = 0.1;
+                ballSpeed.x += (paddleCenterX - ballCenterX) * pullFactor * 0.1;
+
+                // Ograniczenie maksymalnej prędkości w osi X
+                ballSpeed.x = Math.max(-5, Math.min(5, ballSpeed.x));
+            }
+        }
+
         ball.style.left = ballPosition.x + 'px';
         ball.style.top = ballPosition.y + 'px';
     }
@@ -232,9 +252,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 brick.remove();
             }
             const brickIndex = bricks.indexOf(brick);
-            if(brickIndex > -1) bricks.splice(brickIndex, 1);
+            if (brickIndex > -1) bricks.splice(brickIndex, 1);
 
-            if (Math.random() < 0.3) createPowerUp(brickRect.left, brickRect.top);
+            if (brick.dataset.type === 'magnetic-special') {
+                createPowerUp(brickRect.left, brickRect.top, 'magnetic-paddle');
+            } else if (Math.random() < 0.3) {
+                createPowerUp(brickRect.left, brickRect.top);
+            }
 
             // Sprawdź, czy wszystkie klocki zostały zbite
             if (bricksContainer.childElementCount === 0 && !infinityMode) {
@@ -290,9 +314,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const layout = levelLayouts[(level - 1) % levelLayouts.length];
         for (let row = 0; row < layout.length; row++) {
             for (let col = 0; col < layout[row].length; col++) {
-                if (layout[row][col] === 1) {
+                if (layout[row][col] > 0) { // Tworzymy klocek dla wartości > 0
                     const brick = document.createElement('div');
                     brick.classList.add('brick');
+                    if (layout[row][col] === 2) {
+                        brick.classList.add('magnetic-brick');
+                        brick.dataset.type = 'magnetic-special';
+                    }
                     brick.style.gridRowStart = row + 1;
                     brick.style.gridColumnStart = col + 1;
                     bricksContainer.appendChild(brick);
@@ -313,6 +341,13 @@ document.addEventListener('DOMContentLoaded', () => {
             bricksContainer.appendChild(brick);
             bricks.push(brick);
         }
+        // Upewnij się, że jest jeden magnetyczny klocek
+        const allBricks = bricksContainer.querySelectorAll('.brick');
+        if (allBricks.length > 0) {
+            const randomIndex = Math.floor(Math.random() * allBricks.length);
+            allBricks[randomIndex].classList.add('magnetic-brick');
+            allBricks[randomIndex].dataset.type = 'magnetic-special';
+        }
     }
 
     function clearBricks() {
@@ -320,14 +355,25 @@ document.addEventListener('DOMContentLoaded', () => {
         bricks = [];
     }
 
-    function createPowerUp(x, y) {
+    function createPowerUp(x, y, type) {
         const powerUp = document.createElement('div');
         powerUp.classList.add('power-up');
         powerUp.style.left = x + 'px';
         powerUp.style.top = y + 'px';
-        const powerUpType = Math.random() < 0.5 ? 'slow-ball' : 'large-paddle';
+        let powerUpType = type;
+        if (!powerUpType) {
+            powerUpType = Math.random() < 0.5 ? 'slow-ball' : 'large-paddle';
+        }
         powerUp.dataset.type = powerUpType;
-        powerUp.textContent = powerUpType === 'slow-ball' ? 'S' : 'L';
+
+        if (powerUpType === 'magnetic-paddle') {
+            powerUp.textContent = 'M';
+            powerUp.style.backgroundColor = 'yellow';
+            powerUp.style.color = 'black';
+        } else {
+            powerUp.textContent = powerUpType === 'slow-ball' ? 'S' : 'L';
+        }
+
         gameArea.appendChild(powerUp);
         powerUps.push(powerUp);
     }
@@ -352,20 +398,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function activatePowerUp(type) {
-        showPowerUpMessage(type === 'slow-ball' ? 'Spowolnienie!' : 'Duża paletka!');
-        if (type === 'slow-ball') {
-            ballSpeed.x /= 1.5;
-            ballSpeed.y /= 1.5;
-            setTimeout(() => {
-                ballSpeed.x *= 1.5;
-                ballSpeed.y *= 1.5;
-            }, 5000);
-        } else if (type === 'large-paddle') {
-            paddle.style.width = '150px';
-            setTimeout(() => {
-                paddle.style.width = '100px';
-            }, 5000);
+        let message = '';
+        switch (type) {
+            case 'slow-ball':
+                message = 'Spowolnienie!';
+                ballSpeed.x /= 1.5;
+                ballSpeed.y /= 1.5;
+                setTimeout(() => {
+                    ballSpeed.x *= 1.5;
+                    ballSpeed.y *= 1.5;
+                }, 5000);
+                break;
+            case 'large-paddle':
+                message = 'Duża paletka!';
+                paddle.style.width = '150px';
+                setTimeout(() => {
+                    paddle.style.width = '100px';
+                }, 5000);
+                break;
+            case 'magnetic-paddle':
+                message = 'Magnetyczna paletka!';
+                isPaddleMagnetic = true;
+                setTimeout(() => {
+                    isPaddleMagnetic = false;
+                }, 15000); // 15 sekund
+                break;
         }
+        showPowerUpMessage(message);
     }
 
     function clearPowerUps() {
