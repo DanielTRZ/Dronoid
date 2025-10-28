@@ -215,7 +215,7 @@ body {
     border-radius: 5px;
     pointer-events: none;
     box-sizing: border-box;
-    margin-top: 15px;
+    margin-bottom: 4px;
     background-color: yellow;
     color: #333;
 }
