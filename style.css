@@ -68,6 +68,11 @@ body {
     border: 1px solid #fff;
 }
 
+.brick.magnetic-brick {
+    background-color: #ffc107;
+    animation: pulse 1s infinite;
+}
+
 .brick.boss {
     background-color: #ff0000;
     animation: pulse 1s infinite;
