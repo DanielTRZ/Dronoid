@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let bricks = [];
     let powerUps = [];
     let isPaddleMagnetic = false;
+    let isPaddleAttractive = false;
 
     const levelLayouts = [
         // Poziom 1
@@ -222,6 +223,27 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Logika przyciągającej paletki
+        if (isPaddleAttractive) {
+            const paddleRect = paddle.getBoundingClientRect();
+            const ballRect = ball.getBoundingClientRect();
+            const paddleCenterX = paddleRect.left + paddleRect.width / 2;
+            const ballCenterX = ballRect.left + ballRect.width / 2;
+            const paddleCenterY = paddleRect.top + paddleRect.height / 2;
+            const ballCenterY = ballRect.top + ballRect.height / 2;
+            const distance = Math.sqrt(Math.pow(paddleCenterX - ballCenterX, 2) + Math.pow(paddleCenterY - ballCenterY, 2));
+
+            if (distance < 100 && !ballIsOnPaddle) { // 100px zamiast 10px dla lepszego efektu
+                const pullFactor = 0.05;
+                ballSpeed.x += (paddleCenterX - ballCenterX) * pullFactor;
+                ballSpeed.y += (paddleCenterY - ballCenterY) * pullFactor;
+
+                // Ograniczenie maksymalnej prędkości
+                ballSpeed.x = Math.max(-5, Math.min(5, ballSpeed.x));
+                ballSpeed.y = Math.max(-5, Math.min(5, ballSpeed.y));
+            }
+        }
+
         ball.style.left = ballPosition.x + 'px';
         ball.style.top = ballPosition.y + 'px';
     }
@@ -255,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (brickIndex > -1) bricks.splice(brickIndex, 1);
 
             if (brick.dataset.type === 'magnetic-special') {
-                createPowerUp(brickRect.left, brickRect.top, 'magnetic-paddle');
+                createPowerUp(brickRect.left, brickRect.top, 'attractive-paddle');
             } else if (Math.random() < 0.3) {
                 createPowerUp(brickRect.left, brickRect.top);
             }
@@ -370,6 +392,10 @@ document.addEventListener('DOMContentLoaded', () => {
             powerUp.textContent = 'M';
             powerUp.style.backgroundColor = 'yellow';
             powerUp.style.color = 'black';
+        } else if (powerUpType === 'attractive-paddle') {
+            powerUp.textContent = 'K';
+            powerUp.style.backgroundColor = 'yellow';
+            powerUp.style.color = 'black';
         } else {
             powerUp.textContent = powerUpType === 'slow-ball' ? 'S' : 'L';
         }
@@ -421,6 +447,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 isPaddleMagnetic = true;
                 setTimeout(() => {
                     isPaddleMagnetic = false;
+                }, 15000); // 15 sekund
+                break;
+            case 'attractive-paddle':
+                message = 'Przyciągająca paletka!';
+                isPaddleAttractive = true;
+                setTimeout(() => {
+                    isPaddleAttractive = false;
                 }, 15000); // 15 sekund
                 break;
         }
