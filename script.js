@@ -293,9 +293,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (layout[row][col] === 1) {
                     const brick = document.createElement('div');
                     brick.classList.add('brick');
-                    // Użycie CSS Grid nie wymaga tych stylów, jeśli jest dobrze skonfigurowany
-                    // brick.style.gridRowStart = row + 1;
-                    // brick.style.gridColumnStart = col + 1;
+                    brick.style.gridRowStart = row + 1;
+                    brick.style.gridColumnStart = col + 1;
                     bricksContainer.appendChild(brick);
                     bricks.push(brick);
                 }
