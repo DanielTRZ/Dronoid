@@ -34,6 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let powerUps = [];
     let isPaddleMagnetic = false;
     let isPaddleAttractive = false;
+    const defaultPaddleWidth = paddle.offsetWidth;
+    let activePaddleWidthTimeout = null;
 
     const levelLayouts = [
         // Poziom 1
@@ -277,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (brickIndex > -1) bricks.splice(brickIndex, 1);
 
             if (brick.dataset.type === 'magnetic-special') {
-                createPowerUp(brickRect.left, brickRect.top, 'attractive-paddle');
+                createPowerUp(brickRect.left, brickRect.top, 'wide-paddle');
             } else if (Math.random() < 0.3) {
                 createPowerUp(brickRect.left, brickRect.top);
             }
@@ -396,6 +398,8 @@ document.addEventListener('DOMContentLoaded', () => {
             powerUp.textContent = 'K';
             powerUp.style.backgroundColor = 'yellow';
             powerUp.style.color = 'black';
+        } else if (powerUpType === 'wide-paddle') {
+            powerUp.textContent = 'W';
         } else {
             powerUp.textContent = powerUpType === 'slow-ball' ? 'S' : 'L';
         }
@@ -426,6 +430,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function activatePowerUp(type) {
         let message = '';
         switch (type) {
+            case 'wide-paddle':
+                message = 'Szeroka paletka!';
+                if (activePaddleWidthTimeout) {
+                    clearTimeout(activePaddleWidthTimeout);
+                }
+                paddle.style.width = (defaultPaddleWidth + 6) + 'px';
+                activePaddleWidthTimeout = setTimeout(() => {
+                    paddle.style.width = defaultPaddleWidth + 'px';
+                }, 10000);
+                break;
             case 'slow-ball':
                 message = 'Spowolnienie!';
                 ballSpeed.x /= 1.5;
