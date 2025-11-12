@@ -34,6 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let powerUps = [];
     let isPaddleMagnetic = false;
     let isPaddleAttractive = false;
+    let defaultPaddleWidth = null; // Zostanie ustawione przy pierwszym użyciu
+    let activePaddleWidthTimeout = null;
 
     const levelLayouts = [
         // Poziom 1
@@ -99,6 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function resetPaddle() {
         paddlePosition = (gameArea.clientWidth / 2) - (paddle.offsetWidth / 2);
         paddle.style.left = paddlePosition + 'px';
+        if (defaultPaddleWidth) {
+            paddle.style.width = defaultPaddleWidth + 'px';
+        }
     }
 
     function endGame() {
@@ -166,9 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ballSpeed.y = -ballSpeed.y;
                 bounces++;
                 updateStats();
-                paddle.style.backgroundColor = 'yellow';
                 showBumEffect();
-                setTimeout(() => paddle.style.backgroundColor = '#333', 100);
             }
 
             // Kolizje z klockami
@@ -266,7 +269,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleBrickRemoval(brick) {
         const brickRect = brick.getBoundingClientRect();
-        createExplosion(brickRect.left + brickRect.width / 2, brickRect.top + brickRect.height / 2);
+        const gameAreaRect = gameArea.getBoundingClientRect();
+
+        // Oblicz współrzędne względem obszaru gry
+        const relativeX = brickRect.left - gameAreaRect.left;
+        const relativeY = brickRect.top - gameAreaRect.top;
+
+        createExplosion(relativeX + brickRect.width / 2, relativeY + brickRect.height / 2);
         brick.classList.add('blinking');
 
         setTimeout(() => {
@@ -277,9 +286,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (brickIndex > -1) bricks.splice(brickIndex, 1);
 
             if (brick.dataset.type === 'magnetic-special') {
-                createPowerUp(brickRect.left, brickRect.top, 'attractive-paddle');
+                createPowerUp(relativeX, relativeY, 'wide-paddle');
             } else if (Math.random() < 0.3) {
-                createPowerUp(brickRect.left, brickRect.top);
+                createPowerUp(relativeX, relativeY);
             }
 
             // Sprawdź, czy wszystkie klocki zostały zbite
@@ -396,6 +405,8 @@ document.addEventListener('DOMContentLoaded', () => {
             powerUp.textContent = 'K';
             powerUp.style.backgroundColor = 'yellow';
             powerUp.style.color = 'black';
+        } else if (powerUpType === 'wide-paddle') {
+            powerUp.textContent = 'W';
         } else {
             powerUp.textContent = powerUpType === 'slow-ball' ? 'S' : 'L';
         }
@@ -405,17 +416,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updatePowerUps() {
-        const paddleRect = paddle.getBoundingClientRect();
         powerUps.forEach((powerUp, index) => {
-            const powerUpRect = powerUp.getBoundingClientRect();
+            // Przesuń doładowanie w dół
             powerUp.style.top = (powerUp.offsetTop + 2) + 'px';
 
-            if (powerUpRect.top > gameArea.clientHeight) {
+            // Usuń, jeśli poza ekranem
+            if (powerUp.offsetTop > gameArea.clientHeight) {
                 powerUp.remove();
                 powerUps.splice(index, 1);
+                return; // Przejdź do następnego doładowania
             }
 
-            if (powerUpRect.bottom >= paddleRect.top && powerUpRect.top <= paddleRect.bottom && powerUpRect.right >= paddleRect.left && powerUpRect.left <= paddleRect.right) {
+            // Sprawdzenie kolizji przy użyciu właściwości offset
+            const paddleLeft = paddle.offsetLeft;
+            const paddleRight = paddle.offsetLeft + paddle.offsetWidth;
+            const paddleTop = paddle.offsetTop;
+
+            const powerUpLeft = powerUp.offsetLeft;
+            const powerUpRight = powerUp.offsetLeft + powerUp.offsetWidth;
+            const powerUpBottom = powerUp.offsetTop + powerUp.offsetHeight;
+
+            if (powerUpBottom >= paddleTop &&
+                powerUpRight >= paddleLeft &&
+                powerUpLeft <= paddleRight) {
+
                 activatePowerUp(powerUp.dataset.type);
                 powerUp.remove();
                 powerUps.splice(index, 1);
@@ -426,6 +450,19 @@ document.addEventListener('DOMContentLoaded', () => {
     function activatePowerUp(type) {
         let message = '';
         switch (type) {
+            case 'wide-paddle':
+                message = 'Szeroka paletka!';
+                if (defaultPaddleWidth === null) {
+                    defaultPaddleWidth = paddle.offsetWidth;
+                }
+                if (activePaddleWidthTimeout) {
+                    clearTimeout(activePaddleWidthTimeout);
+                }
+                paddle.style.width = (defaultPaddleWidth + 6) + 'px';
+                activePaddleWidthTimeout = setTimeout(() => {
+                    paddle.style.width = defaultPaddleWidth + 'px';
+                }, 10000);
+                break;
             case 'slow-ball':
                 message = 'Spowolnienie!';
                 ballSpeed.x /= 1.5;
@@ -437,9 +474,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             case 'large-paddle':
                 message = 'Duża paletka!';
+                if (defaultPaddleWidth === null) {
+                    defaultPaddleWidth = paddle.offsetWidth;
+                }
                 paddle.style.width = '150px';
                 setTimeout(() => {
-                    paddle.style.width = '100px';
+                    paddle.style.width = defaultPaddleWidth + 'px';
                 }, 5000);
                 break;
             case 'magnetic-paddle':
@@ -475,7 +515,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function createExplosion(x, y) {
         const particleCount = 8;
-        const gameAreaRect = gameArea.getBoundingClientRect();
         for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
             particle.classList.add('brick-explosion-particle');
@@ -483,8 +522,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const angle = (i / particleCount) * 2 * Math.PI;
             const speed = Math.random() * 2 + 1;
-            let particleX = x - gameAreaRect.left;
-            let particleY = y - gameAreaRect.top;
+            let particleX = x;
+            let particleY = y;
             const dx = Math.cos(angle) * speed;
             const dy = Math.sin(angle) * speed;
 
