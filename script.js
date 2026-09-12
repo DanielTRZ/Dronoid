@@ -3,7 +3,6 @@
 
 
 
-
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Elements ---
     const paddle = document.getElementById('paddle');
